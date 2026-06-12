@@ -5,7 +5,8 @@ import random
 st.set_page_config(
     page_title="우리 반 청소 관리 앱",
     page_icon="🧹",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 # 세션 상태 초기화
@@ -20,12 +21,14 @@ st.title("🧹 우리 반 청소 관리 앱")
 st.markdown("---")
 
 # 사이드바
+st.sidebar.success("메뉴를 선택하세요")
+
 menu = st.sidebar.radio(
     "메뉴 선택",
     ["홈", "공지사항", "청소 체크리스트"]
 )
 
-# 홈 화면
+# 홈
 if menu == "홈":
 
     st.header("📚 청소 앱 소개")
@@ -34,7 +37,8 @@ if menu == "홈":
         """
         우리 반 청소 관리 앱에 오신 것을 환영합니다!
 
-        이 앱은 학생들이 청소 활동을 쉽고 즐겁게 할 수 있도록 만들어졌습니다.
+        학생들이 즐겁게 청소하고,
+        깨끗한 교실을 함께 만들 수 있도록 제작된 앱입니다.
         """
     )
 
@@ -42,13 +46,13 @@ if menu == "홈":
 
     with col1:
         st.subheader("✨ 청소의 중요성")
-        st.write(
-            """
-            - 깨끗한 환경에서 공부할 수 있어요.
-            - 건강을 지킬 수 있어요.
-            - 책임감과 협동심을 기를 수 있어요.
-            """
-        )
+
+        st.write("""
+        - 깨끗한 환경에서 공부할 수 있어요.
+        - 건강을 지킬 수 있어요.
+        - 책임감과 협동심을 기를 수 있어요.
+        - 모두가 쾌적한 교실을 만들 수 있어요.
+        """)
 
     with col2:
         st.subheader("🏫 오늘의 청소 구역")
@@ -103,7 +107,7 @@ elif menu == "공지사항":
     else:
         st.warning("등록된 공지가 없습니다.")
 
-# 체크리스트
+# 청소 체크리스트
 elif menu == "청소 체크리스트":
 
     st.header("✅ 청소 체크리스트")
@@ -136,3 +140,7 @@ elif menu == "청소 체크리스트":
     if completed == total:
         st.balloons()
         st.success("🎉 모든 청소를 완료했습니다!")
+
+# 하단 정보
+st.markdown("---")
+st.caption("우리 반 청소 관리 앱")
