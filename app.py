@@ -1,146 +1,101 @@
 import streamlit as st
-import random
 
 # 페이지 설정
 st.set_page_config(
-    page_title="우리 반 청소 관리 앱",
-    page_icon="🧹",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="우리반 청소 도우미",
+    page_icon="🏫",
+    layout="wide"
 )
 
-# 세션 상태 초기화
-if "notices" not in st.session_state:
-    st.session_state.notices = [
-        "금요일은 대청소 날입니다.",
-        "분리수거는 반드시 구분해서 버려주세요."
-    ]
+# 데이터
+NOTICES = [
+    "📢 금요일은 특별 대청소가 있습니다.",
+    "📢 분리수거함 정리를 꼼꼼히 해주세요.",
+    "📢 창문 청소 시 안전에 주의하세요."
+]
 
-# 제목
-st.title("🧹 우리 반 청소 관리 앱")
-st.markdown("---")
+CLEANING_AREAS = {
+    "교실 바닥": "김민준",
+    "칠판 정리": "이서연",
+    "창문 청소": "박지호",
+    "분리수거": "최유진",
+    "복도 청소": "정하준"
+}
 
 # 사이드바
-st.sidebar.success("메뉴를 선택하세요")
-
 menu = st.sidebar.radio(
-    "메뉴 선택",
-    ["홈", "공지사항", "청소 체크리스트"]
+    "메뉴",
+    [
+        "홈",
+        "공지사항",
+        "청소 당번표",
+        "청소 체크리스트"
+    ]
 )
 
 # 홈
 if menu == "홈":
 
-    st.header("📚 청소 앱 소개")
+    st.title("🏫 우리반 청소 도우미")
+
+    st.success("오늘도 깨끗한 교실을 만들어 봅시다!")
+
+    st.subheader("📅 오늘의 청소 구역")
+
+    for area in CLEANING_AREAS:
+        st.write(f"• {area}")
 
     st.info(
         """
-        우리 반 청소 관리 앱에 오신 것을 환영합니다!
-
-        학생들이 즐겁게 청소하고,
-        깨끗한 교실을 함께 만들 수 있도록 제작된 앱입니다.
-        """
+담당 구역을 확인한 후
+청소 완료 시 체크리스트를 완료해주세요.
+"""
     )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader("✨ 청소의 중요성")
-
-        st.write("""
-        - 깨끗한 환경에서 공부할 수 있어요.
-        - 건강을 지킬 수 있어요.
-        - 책임감과 협동심을 기를 수 있어요.
-        - 모두가 쾌적한 교실을 만들 수 있어요.
-        """)
-
-    with col2:
-        st.subheader("🏫 오늘의 청소 구역")
-
-        cleaning_areas = [
-            "교실 바닥",
-            "복도",
-            "창문",
-            "분리수거",
-            "칠판 정리"
-        ]
-
-        for area in cleaning_areas:
-            st.success(area)
-
-    st.markdown("---")
-
-    quotes = [
-        "깨끗한 교실은 즐거운 학교생활의 시작입니다.",
-        "작은 청소가 큰 변화를 만듭니다.",
-        "함께 청소하면 더 빠르고 즐겁습니다.",
-        "정리정돈은 좋은 습관입니다.",
-        "오늘의 청소가 내일의 쾌적함을 만듭니다."
-    ]
-
-    st.subheader("🌟 오늘의 청소 한마디")
-    st.warning(random.choice(quotes))
 
 # 공지사항
 elif menu == "공지사항":
 
-    st.header("📢 청소 공지사항")
+    st.title("📢 공지사항")
 
-    with st.form("notice_form"):
-        notice = st.text_input("새 공지 입력")
-        submitted = st.form_submit_button("공지 추가")
+    for notice in NOTICES:
+        st.info(notice)
 
-        if submitted:
-            if notice.strip():
-                st.session_state.notices.insert(0, notice.strip())
-                st.success("공지가 등록되었습니다.")
-            else:
-                st.error("공지 내용을 입력해주세요.")
+# 청소 당번표
+elif menu == "청소 당번표":
 
-    st.markdown("---")
+    st.title("👨‍🎓 청소 당번표")
 
-    st.subheader("공지 목록")
-
-    if st.session_state.notices:
-        for idx, item in enumerate(st.session_state.notices, start=1):
-            st.info(f"{idx}. {item}")
-    else:
-        st.warning("등록된 공지가 없습니다.")
+    for area, student in CLEANING_AREAS.items():
+        st.write(f"**{area}** : {student}")
 
 # 청소 체크리스트
 elif menu == "청소 체크리스트":
 
-    st.header("✅ 청소 체크리스트")
-
-    tasks = [
-        "바닥 쓸기",
-        "쓰레기 버리기",
-        "칠판 닦기",
-        "창문 정리",
-        "분리수거 정리"
-    ]
+    st.title("✅ 청소 체크리스트")
 
     completed = 0
+    total = len(CLEANING_AREAS)
 
-    for task in tasks:
-        if st.checkbox(task):
-            completed += 1
+    try:
+        for area in CLEANING_AREAS:
 
-    total = len(tasks)
+            if st.checkbox(area):
+                completed += 1
 
-    st.markdown("---")
+        st.divider()
 
-    st.subheader("📊 진행 상황")
+        progress = completed / total
 
-    progress = completed / total
-    st.progress(progress)
+        st.metric(
+            "완료 현황",
+            f"{completed}/{total}"
+        )
 
-    st.write(f"완료: {completed} / {total}")
+        st.progress(progress)
 
-    if completed == total:
-        st.balloons()
-        st.success("🎉 모든 청소를 완료했습니다!")
+        if completed == total:
+            st.balloons()
+            st.success("🎉 오늘 청소를 모두 완료했습니다!")
 
-# 하단 정보
-st.markdown("---")
-st.caption("우리 반 청소 관리 앱")
+    except Exception as e:
+        st.error(f"오류가 발생했습니다: {e}")
