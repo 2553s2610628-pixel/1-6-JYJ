@@ -6,82 +6,93 @@ st.set_page_config(
     layout="wide"
 )
 
-# --------------------
-# 데이터
-# --------------------
-NOTICES = [
-    "📢 금요일은 특별 대청소가 있습니다.",
-    "📢 분리수거함 정리를 꼼꼼히 해주세요.",
-    "📢 창문 청소 시 안전에 주의하세요."
+# ----------------------
+# 출석번호 (26번 제외)
+# ----------------------
+students = [i for i in range(1, 37) if i != 26]
+
+# ----------------------
+# 공지사항
+# ----------------------
+notices = [
+    "금요일은 특별 대청소가 있습니다.",
+    "분리수거는 반드시 종류별로 구분해주세요.",
+    "창문 청소 시 안전에 주의하세요."
 ]
 
-CLEANING_AREAS = {
-    "교실 바닥 청소": "김민준",
-    "칠판 정리": "이서연",
-    "창문 청소": "박지호",
-    "분리수거 정리": "최유진",
-    "복도 청소": "정하준"
+# ----------------------
+# 청소 구역
+# ----------------------
+cleaning_areas = [
+    "교실 바닥 청소",
+    "칠판 정리",
+    "창문 청소",
+    "분리수거 정리",
+    "복도 청소"
+]
+
+# 담당 번호 자동 배정
+duty_assignments = {
+    area: students[index]
+    for index, area in enumerate(cleaning_areas)
 }
 
-# --------------------
+# ----------------------
 # 제목
-# --------------------
+# ----------------------
 st.title("🏫 우리반 청소 도우미")
-st.caption("우리 반 청소를 쉽고 즐겁게 관리해보세요!")
+st.caption("깨끗한 교실은 우리 모두가 함께 만듭니다.")
 
-# --------------------
-# 오늘의 안내
-# --------------------
-st.success("✨ 오늘도 깨끗한 교실 만들기 프로젝트 진행 중!")
+# ----------------------
+# 안내
+# ----------------------
+st.success("✨ 오늘의 청소를 시작해보세요!")
 
-# --------------------
+# ----------------------
 # 공지사항
-# --------------------
+# ----------------------
 st.subheader("📢 공지사항")
 
-for notice in NOTICES:
+for notice in notices:
     st.info(notice)
 
 st.divider()
 
-# --------------------
-# 당번표
-# --------------------
+# ----------------------
+# 청소 당번표
+# ----------------------
 st.subheader("👨‍🎓 오늘의 청소 당번")
 
 col1, col2 = st.columns(2)
 
-areas = list(CLEANING_AREAS.items())
+items = list(duty_assignments.items())
 
-for i, (area, student) in enumerate(areas):
+for idx, (area, number) in enumerate(items):
 
-    if i % 2 == 0:
+    text = f"🧹 **{area}**  \n담당 : {number}번"
+
+    if idx % 2 == 0:
         with col1:
-            st.write(f"🧹 **{area}**")
-            st.write(f"담당: {student}")
-            st.write("")
+            st.write(text)
     else:
         with col2:
-            st.write(f"🧹 **{area}**")
-            st.write(f"담당: {student}")
-            st.write("")
+            st.write(text)
 
 st.divider()
 
-# --------------------
+# ----------------------
 # 체크리스트
-# --------------------
+# ----------------------
 st.subheader("✅ 청소 완료 체크")
 
 completed = 0
-total = len(CLEANING_AREAS)
+total = len(cleaning_areas)
 
 try:
 
-    for area in CLEANING_AREAS.keys():
-        checked = st.checkbox(area)
+    for area in cleaning_areas:
 
-        if checked:
+        if st.checkbox(area):
             completed += 1
 
     progress = completed / total
@@ -89,8 +100,8 @@ try:
     st.divider()
 
     st.metric(
-        label="청소 진행률",
-        value=f"{completed}/{total}"
+        "청소 진행률",
+        f"{completed}/{total}"
     )
 
     st.progress(progress)
@@ -99,23 +110,18 @@ try:
         st.balloons()
         st.success("🎉 오늘 청소를 모두 완료했습니다!")
 
-except Exception as e:
-    st.error(f"오류가 발생했습니다: {e}")
+except Exception as error:
+    st.error(f"오류가 발생했습니다: {error}")
 
-# --------------------
-# 하단 메시지
-# --------------------
 st.divider()
 
-st.markdown(
-    """
-### 🌟 청소 습관 만들기
+st.markdown("""
+### 🌟 우리반 청소 규칙
 
-- 맡은 구역을 책임감 있게 청소하기
-- 분리수거 정확하게 하기
-- 책상과 의자 정리하기
-- 사용한 물건 제자리에 두기
+- 맡은 구역 책임감 있게 청소하기
+- 쓰레기 분리수거 정확히 하기
+- 의자와 책상 정리하기
+- 청소 후 창문 확인하기
 
-깨끗한 교실은 우리 모두가 함께 만듭니다!
-"""
-)
+모두가 함께 만드는 깨끗한 교실!
+""")
