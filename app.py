@@ -1,56 +1,66 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="우리반 청소 도우미",
+    page_title="우리반 청소 안내",
     page_icon="🧹",
     layout="wide"
 )
 
-# ----------------------
-# 출석번호 (26번 제외)
-# ----------------------
-students = [i for i in range(1, 37) if i != 26]
-
-# ----------------------
+# -------------------
 # 공지사항
-# ----------------------
+# -------------------
 notices = [
-    "금요일은 특별 대청소가 있습니다.",
+    "금요일은 특별 대청소가 진행됩니다.",
     "분리수거는 반드시 종류별로 구분해주세요.",
     "창문 청소 시 안전에 주의하세요."
 ]
 
-# ----------------------
-# 청소 구역
-# ----------------------
-cleaning_areas = [
-    "교실 바닥 청소",
-    "칠판 정리",
-    "창문 청소",
-    "분리수거 정리",
-    "복도 청소"
+# -------------------
+# 체크리스트
+# -------------------
+checklist = [
+    "책상 정리하기",
+    "의자 정리하기",
+    "바닥 쓰레기 줍기",
+    "분리수거 하기",
+    "창문 닫기 확인"
 ]
 
-# 담당 번호 자동 배정
-duty_assignments = {
-    area: students[index]
-    for index, area in enumerate(cleaning_areas)
-}
+# -------------------
+# 메인 화면
+# -------------------
+st.title("🏫 우리반 청소 안내")
 
-# ----------------------
-# 제목
-# ----------------------
-st.title("🏫 우리반 청소 도우미")
-st.caption("깨끗한 교실은 우리 모두가 함께 만듭니다.")
+st.markdown("""
+### 깨끗한 교실은 우리 모두의 책임입니다.
 
-# ----------------------
-# 안내
-# ----------------------
-st.success("✨ 오늘의 청소를 시작해보세요!")
+이 앱은 우리 반 학생들이 청소 활동에 적극적으로 참여할 수 있도록 만들어졌습니다.
 
-# ----------------------
+#### 이용 방법
+1. 공지사항을 확인합니다.
+2. 청소 체크리스트를 확인합니다.
+3. 맡은 구역 청소를 진행합니다.
+4. 완료된 항목을 체크합니다.
+
+함께 깨끗한 교실을 만들어 봅시다!
+""")
+
+st.divider()
+
+# -------------------
+# 청소 팁
+# -------------------
+st.subheader("💡 오늘의 청소 팁")
+
+st.info(
+    "청소는 큰 곳보다 작은 곳부터 시작하면 더 빠르고 효율적으로 끝낼 수 있습니다."
+)
+
+st.divider()
+
+# -------------------
 # 공지사항
-# ----------------------
+# -------------------
 st.subheader("📢 공지사항")
 
 for notice in notices:
@@ -58,49 +68,25 @@ for notice in notices:
 
 st.divider()
 
-# ----------------------
-# 청소 당번표
-# ----------------------
-st.subheader("👨‍🎓 오늘의 청소 당번")
-
-col1, col2 = st.columns(2)
-
-items = list(duty_assignments.items())
-
-for idx, (area, number) in enumerate(items):
-
-    text = f"🧹 **{area}**  \n담당 : {number}번"
-
-    if idx % 2 == 0:
-        with col1:
-            st.write(text)
-    else:
-        with col2:
-            st.write(text)
-
-st.divider()
-
-# ----------------------
+# -------------------
 # 체크리스트
-# ----------------------
-st.subheader("✅ 청소 완료 체크")
+# -------------------
+st.subheader("✅ 청소 체크리스트")
 
 completed = 0
-total = len(cleaning_areas)
+total = len(checklist)
 
 try:
 
-    for area in cleaning_areas:
+    for item in checklist:
 
-        if st.checkbox(area):
+        if st.checkbox(item):
             completed += 1
 
     progress = completed / total
 
-    st.divider()
-
     st.metric(
-        "청소 진행률",
+        "완료 현황",
         f"{completed}/{total}"
     )
 
@@ -108,20 +94,11 @@ try:
 
     if completed == total:
         st.balloons()
-        st.success("🎉 오늘 청소를 모두 완료했습니다!")
+        st.success("🎉 체크리스트를 모두 완료했습니다!")
 
-except Exception as error:
-    st.error(f"오류가 발생했습니다: {error}")
+except Exception as e:
+    st.error(f"오류가 발생했습니다: {e}")
 
 st.divider()
 
-st.markdown("""
-### 🌟 우리반 청소 규칙
-
-- 맡은 구역 책임감 있게 청소하기
-- 쓰레기 분리수거 정확히 하기
-- 의자와 책상 정리하기
-- 청소 후 창문 확인하기
-
-모두가 함께 만드는 깨끗한 교실!
-""")
+st.caption("우리 모두가 함께 만드는 깨끗한 교실 🧹")
